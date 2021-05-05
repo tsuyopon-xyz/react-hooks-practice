@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, fireEvent, act, RenderResult } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import {
   AsyncCounterContext,
@@ -36,58 +35,45 @@ const CustomElement = () => {
   );
 };
 
-// See: https://jestjs.io/ja/docs/timer-mocks
-// jest.useFakeTimers();
-
 describe('AsyncCounterContext.test.ts', () => {
-  test('values in provider', async () => {
+  let renderResult: RenderResult;
+
+  beforeEach(() => {
+    // See: https://jestjs.io/ja/docs/timer-mocks
+    jest.useFakeTimers();
     const component = CustomElement();
-    render(component);
+    renderResult = render(component);
+  });
 
-    expect(screen.getByText(/^Current count:/)).toHaveTextContent(
-      'Current count: 0'
-    );
+  test('Increment count 1 second later after clicking the "Increment" button', async () => {
+    const { getByText } = renderResult;
 
-    const incrementButton = screen.getByText('Increment');
-    const decrementButton = screen.getByText('Decrement');
+    expect(getByText(/^Current count:/)).toHaveTextContent('Current count: 0');
 
-    UserEvent.click(incrementButton);
+    const incrementButton = getByText('Increment');
+    fireEvent.click(incrementButton);
 
-    // expect(setTimeout).toHaveBeenCalledTimes(1);
-    // expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
-    // jest.advanceTimersByTime(1000);
+    // See: https://davidwcai.medium.com/react-testing-library-and-the-not-wrapped-in-act-errors-491a5629193b
+    // Case 2: Jest Fake Timers
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
 
-    await waitFor<void>(
-      () => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            expect(screen.getByText(/^Current count:/)).toHaveTextContent(
-              'Current count: 1'
-            );
-            resolve();
-          }, 1000);
-        });
-      },
-      {
-        timeout: 5000,
-      }
-    );
+    expect(getByText(/^Current count:/)).toHaveTextContent('Current count: 1');
+  });
 
-    UserEvent.click(decrementButton);
-    await waitFor<void>(
-      () => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            expect(screen.getByText(/^Current count:/)).toHaveTextContent(
-              'Current count: 0'
-            );
-            resolve();
-          }, 1000);
-        });
-      },
-      {
-        timeout: 5000,
-      }
-    );
+  test('Decrement count 1 second later after clicking the "Decrement" button', async () => {
+    const { getByText } = renderResult;
+
+    expect(getByText(/^Current count:/)).toHaveTextContent('Current count: 0');
+
+    const incrementButton = getByText('Decrement');
+    fireEvent.click(incrementButton);
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(getByText(/^Current count:/)).toHaveTextContent('Current count: -1');
   });
 });

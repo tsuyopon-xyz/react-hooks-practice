@@ -5,6 +5,7 @@ import {
   reducer,
   initialState,
 } from 'src/reducers/count-reducer';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 type ContextType = {
   state: CountState;
