@@ -1,12 +1,12 @@
 import { useContext } from 'react';
-import { CounterContext } from 'src/contexts/CounterContext';
+import { AsyncCounterContext } from 'src/contexts/AsyncCounterContext';
 
-const Counter: React.VFC = () => {
-  const { dispatch } = useContext(CounterContext);
+const AsyncCounter: React.VFC = () => {
+  const { dispatch } = useContext(AsyncCounterContext);
 
   return (
     <div>
-      <h2>Counter.tsx</h2>
+      <h2>AsyncCounter.tsx（クリックして1秒後に更新）</h2>
       <button
         type="button"
         onClick={() => {
@@ -27,4 +27,4 @@ const Counter: React.VFC = () => {
   );
 };
 
-export default Counter;
+export default AsyncCounter;
