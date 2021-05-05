@@ -6,7 +6,7 @@ export type CountAction = {
   type: 'increment' | 'decrement';
 };
 
-const initialState: CountState = {
+export const initialState: CountState = {
   count: 0,
 };
 

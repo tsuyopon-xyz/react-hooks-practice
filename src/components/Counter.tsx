@@ -1,18 +1,30 @@
-import React, { useReducer } from 'react';
-import { reducer as CounterReducer } from 'src/reducers/count-reducer';
+import { useContext, memo } from 'react';
+import { CounterContext } from 'src/contexts/CounterContext';
 
-export default function Counter() {
-  const [state, dispatch] = useReducer(CounterReducer, { count: 0 });
+const Counter: React.VFC = () => {
+  const { dispatch } = useContext(CounterContext);
 
   return (
     <div>
-      <p>現在の値 : {state.count}</p>
-      <button type="button" onClick={() => dispatch({ type: 'increment' })}>
+      <h2>Counter.tsx</h2>
+      <button
+        type="button"
+        onClick={() => {
+          dispatch({ type: 'increment' });
+        }}
+      >
         +
       </button>
-      <button type="button" onClick={() => dispatch({ type: 'decrement' })}>
+      <button
+        type="button"
+        onClick={() => {
+          dispatch({ type: 'decrement' });
+        }}
+      >
         -
       </button>
     </div>
   );
-}
+};
+
+export default memo(Counter);

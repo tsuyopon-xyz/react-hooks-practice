@@ -1,10 +1,14 @@
 import Counter from 'src/components/Counter';
+import ContextShower from 'src/components/ContextShower';
+import { CounterProvider } from 'src/contexts/CounterContext';
 
 function App() {
   return (
-    <div>
+    <CounterProvider>
       <Counter />
-    </div>
+      <hr />
+      <ContextShower />
+    </CounterProvider>
   );
 }
 
